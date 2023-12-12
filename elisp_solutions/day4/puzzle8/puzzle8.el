@@ -34,32 +34,31 @@
     (setq original-cards (mapcar #'get-original-card-from-line puzzle-lines))
     original-cards))
 
+;; Pseudo code
+;; result-of-numbers
+;; if numbers length is 0 -> 0
+
+;; if numbers length is 1 ->
+    ;;; if value is 0 -> 1
+    ;;; if value is (n) -> (cached) or (+ 1 (result-of-numbers (subseq)))
+
+;; if numbers length is n -> ('+ (result-of-numbers (list (car numbers)) (cdr numbers)))
+
 (defun main ()
   (setq original-cards (get-original-cards "puzzle8_input.txt"))
 
   (setq original-cards-to-sort (copy-sequence original-cards))
   (setq sorted-original-cards (sort original-cards-to-sort (lambda (a b) (< (cadr a) (cadr b)))))
-  (setq cards (make-hash-table :test 'equal))
-
-  ;; Pseudo code
-  ;; result-of-numbers
-  ;; if numbers length is 0 -> 0
-
-  ;; if numbers length is 1 ->
-    ;;; if value is 0 -> 1
-    ;;; if value is (n) -> (cached) or (+ 1 (result-of-numbers (subseq)))
-
-  ;; if numbers length is n -> ('+ (result-of-numbers (list (car numbers)) (cdr numbers)))
 
   (setq result-of-numbers-cache (make-hash-table :test 'equal))
 
   (defun result-of-numbers (numbers)
     (cl-case (length numbers)
       (0 0)
-      (1 (let ((number (car numbers)))
-           (setq processing-card-no (car number))
-           (setq processing-card-value (cadr number))
-           (setq cache-value (gethash (car number) result-of-numbers-cache))
+      (1 (let* ((number (car numbers))
+                (processing-card-no (car number))
+                (processing-card-value (cadr number))
+                (cache-value (gethash (car number) result-of-numbers-cache)))
            (if cache-value
                cache-value
              (progn
